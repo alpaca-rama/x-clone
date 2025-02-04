@@ -27,9 +27,11 @@ export async function shareAction({ formData, settings }: ShareActionProps) {
     file: buffer,
     fileName: file.name,
     folder: '/x-clone/posts',
-    transformation: {
-      pre: transformation,
-    },
+    ...(file.type.includes('image') && {
+      transformation: {
+        pre: transformation,
+      },
+    }),
     customMetadata: {
       sensitive: settings.sensitive,
     }

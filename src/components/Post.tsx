@@ -2,6 +2,7 @@ import { imageKit } from "@/utils";
 import Image from "./Image";
 import PostInfo from "./PostInfo";
 import PostInteractions from "./PostInteractions";
+import Video from "./Video";
 
 interface FileDetailsResponse {
   width: number;
@@ -22,7 +23,7 @@ export default async function Post() {
     });
   };
 
-  const fileDetails = await getFileDetails('67a24381432c476416a54361');
+  const fileDetails = await getFileDetails('67a253e0432c476416f6b94a');
 
   console.log(fileDetails);
 
@@ -72,7 +73,8 @@ export default async function Post() {
             w={600}
             h={600}
           /> */}
-          {fileDetails && (
+
+          {fileDetails && fileDetails.fileType === 'image' ? (
             <Image
               path={fileDetails.filePath}
               alt={''}
@@ -80,8 +82,12 @@ export default async function Post() {
               h={fileDetails.height}
               className={fileDetails.customMetadata?.sensitive ? 'blur-lg' : ''}
             />
-          )
-          }
+          ) : (
+            <Video
+              path={fileDetails.filePath}
+              className={fileDetails.customMetadata?.sensitive ? 'blur-lg' : ''}
+            />
+          )}
 
           <PostInteractions />
         </div>
