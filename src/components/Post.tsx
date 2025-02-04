@@ -1,8 +1,32 @@
+import { imageKit } from "@/utils";
 import Image from "./Image";
 import PostInfo from "./PostInfo";
 import PostInteractions from "./PostInteractions";
 
-export default function Post() {
+interface FileDetailsResponse {
+  width: number;
+  height: number;
+  filePath: string;
+  url: string;
+  fileType: string;
+  customMetadata?: { sensitive: boolean };
+}
+
+export default async function Post() {
+  async function getFileDetails(fieldId: string): Promise<FileDetailsResponse> {
+    return new Promise(function (resolve, reject) {
+      imageKit.getFileDetails(fieldId, function (error, result) {
+        if (error) reject(error);
+        else resolve(result as FileDetailsResponse);
+      });
+    });
+  };
+
+  const fileDetails = await getFileDetails('67a24381432c476416a54361');
+
+  console.log(fileDetails);
+
+
   return (
     <div className={'p-4 border-y-[1px] border-borderGray'}>
       {/* POST TYPE */}
@@ -42,12 +66,22 @@ export default function Post() {
           <p className={''}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat quibusdam facere corporis, quae voluptas sint minus blanditiis, accusantium vitae tempora ab ullam atque odio beatae veritatis iste veniam, dicta illum?
           </p>
-          <Image
+          {/* <Image
             path={'x-clone/general/post.jpeg'}
             alt={'post image'}
             w={600}
             h={600}
-          />
+          /> */}
+          {fileDetails && (
+            <Image
+              path={fileDetails.filePath}
+              alt={''}
+              w={fileDetails.width}
+              h={fileDetails.height}
+              className={fileDetails.customMetadata?.sensitive ? 'blur-lg' : ''}
+            />
+          )
+          }
 
           <PostInteractions />
         </div>
